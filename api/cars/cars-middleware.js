@@ -4,11 +4,12 @@ const vinCheck = require('vin-validator');
 async function checkCarId  (req, res, next)  {
   // DO YOUR MAGIC
   const checkIt = await Cars.getById(req.params.id)
-
-  if(!checkIt.length){
+  
+  if(!checkIt || checkIt.length <= 0){
     next(res.status(404).json({message:`car with id ${req.params.id} is not found`}))
+
   }else{
-    next(req.checksOut = checkIt)
+    next()
   }
 }
 
@@ -41,16 +42,14 @@ const checkVinNumberValid = (req, res, next) => {
 async function checkVinNumberUnique (req, res, next) {
   // DO YOUR MAGIC
   const data = await Cars.getAll();
-
-  if(!data){
-    next()
+  const problem = await data.map(car =>{ car.vin === req.body.vin })
+  if(problem.length > 0){
+    next(res.status(400).json({message:`vin ${req.body.vin} already exists`}))
+  
   }else{
-    data.map(car =>{ if(car.vin === req.body.vin){
-      next(res.status(400).json({message:`vin ${req.body.vin} already exists`}))
-    }else next()})
+    next()
   }
-  next()
-
+  
 }
 
 module.exports = {

@@ -25,21 +25,30 @@ const {
     }
   });
 
-  router.get('/:id',checkCarId ,async (req, res, next) =>{
+  router.get('/:id' , checkCarId ,async (req, res, next) =>{
     try{
-        res.status(200).json(req.checksOut)
+        const car = await Cars.getById(req.params.id)
+        res.status(200).json(car)
     
-    }catch(err){
+    }catch{
         res.status(500).json({
             message:`unknown server-side error. failure to GET`,
-            error:err
         });
     }
   });
 
- /* router.get('/', (req, res, next) =>{
+  router.post('/', checkCarPayload, checkVinNumberValid, 
+  checkVinNumberValid, async (req, res, next) =>{
+        try{
+            const newCar = await Cars.create(req.body)
+            res.status(201).json(newCar)
+        }catch{
+            res.status(500).json({
+                message:`unknown server-side error. failure to POST`,
+            });
+        }    
 
   });
-*/
+
 
   module.exports = router

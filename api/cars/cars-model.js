@@ -1,22 +1,27 @@
 const db = require('../../data/db-config');
 
 
-const getAll = () => {
+async function getAll () {
   // DO YOUR MAGIC
-  let data = db('cars');
-  return data
+  let data = await db('cars');
+  
+  if(data.length){
+    return data
+  }else{
+    const arr = []
+    return arr
+  }
 }
 
 async function getById (id) {
   // DO YOUR MAGIC
-  try{
-    let data = db('cars');
-    const car = await data.where('id', id)
-    return car
-  }catch{
+  const obj = await db('cars').where('id', id).first()
+  if(obj){
+    return obj
+  }else{
     const arr = []
     return arr
-  }  
+  }
 }   
 
 const create = (car) => {
